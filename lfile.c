@@ -195,6 +195,41 @@ static int file_destory(lua_State* L)
 	return 0;
 }
 
+static int file_floderExist(lua_State*L)
+{
+	const char* filepath=NULL;
+	if (lua_gettop(L) != 1)
+		return 0;
+	filepath=lua_tostring(L,1);
+	if(filepath==NULL)
+		return 0;
+	if ( !access(filepath,0) )
+		lua_pushinteger(L,1);
+	else
+		lua_pushinteger(L,0);
+	return 1;
+}
+
+static int file_createdir(lua_State*L)
+{
+	const char* filepath=NULL;
+	if (lua_gettop(L) != 1)
+		return 0;
+	filepath=lua_tostring(L,1);
+	if(filepath==NULL)
+		return 0;
+	if ( !access(filepath,0) )
+		lua_pushinteger(L,1);
+	else
+	{
+		if(mkdir(filepath,   0755)==-1)  
+			lua_pushinteger(L,0);
+		else
+			lua_pushinteger(L,1);
+	}
+	return 1;
+}
+
 static const struct luaL_Reg file_lib[] = {
 	{ "create", file_create },
 	{ "dev", file_dev },
@@ -211,6 +246,8 @@ static const struct luaL_Reg file_lib[] = {
 	{ "modify", file_modify },
 	{ "change", file_change },
 	{ "destory", file_destory },
+	{"floderExist",file_floderExist},
+	{"createdir",file_createdir},
 	{ NULL, NULL }
 };
 
